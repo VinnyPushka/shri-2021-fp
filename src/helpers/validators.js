@@ -72,11 +72,9 @@ export const validateFieldN5 = ({ star, square, triangle, circle }) => {
 
 // 6. Две зеленые фигуры (одна из них треугольник), еще одна любая красная.
 export const validateFieldN6 = ({ star, square, triangle, circle }) => {
+    let args = [star, square, circle];
     if (triangle !== 'green') return false;
-    if (!R.any(isRed)([star, square, circle])) return false;
-    if (!R.any(isGreen)([star, square, circle])) return false;
-
-    return true;
+    return R.allPass([R.any(isRed), R.any(isGreen)])(args);
 };
 
 // 7. Все фигуры оранжевые.

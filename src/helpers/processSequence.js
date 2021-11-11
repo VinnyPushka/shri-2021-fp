@@ -29,7 +29,7 @@ const validate = (string) => {
 
     return false;
 };
-const getNumFromSting = (str) => Math.round(Number(str));
+const getNumFromString = (str) => Math.round(Number(str));
 const getNumberLength = (num) => String(num).length;
 const getSquare = (num) => num ** 2;
 const getId = (num) => num % 3;
@@ -39,12 +39,14 @@ const processSequence = ({ value, writeLog, handleSuccess, handleError }) => {
 
     if (!validate(value)) return handleError('ValidationError');
 
-    writeLog(getNumFromSting(value));
+    const numberValue = getNumFromString(value);
+
+    writeLog(numberValue);
 
     api.get('https://api.tech/numbers/base', {
         from: 10,
         to: 2,
-        number: value,
+        number: numberValue,
     })
         .catch((e) => console.log(e))
 

@@ -15,11 +15,26 @@ import * as R from 'ramda';
  */
 
 const isRed = R.equals('red');
+const isWhite = R.equals('white');
 const isGreen = R.equals('green');
 const isNotWhite = R.compose(R.not, R.equals('white'));
 const isNotRed = R.compose(R.not, isRed);
+const isNotWhiteOrRed = R.allPass([isNotRed, isNotWhite]);
 const isBlue = R.equals('blue');
 const isOrange = R.equals('orange');
+const includesGreenAndRed = R.allPass([R.any(isRed), R.any(isGreen)]);
+const areOtherThenGreenAndRed = R.anyPass([
+    R.any(isWhite),
+    R.any(isBlue),
+    R.any(isOrange),
+]);
+const areGreenAndRedAndOneOther = R.allPass([
+    includesGreenAndRed,
+    areOtherThenGreenAndRed,
+]);
+const areNotWhite = R.all(isNotWhite);
+const allAreGreen = R.all(isGreen);
+const allAreOrange = R.all(isOrange);
 
 // 1. Красная звезда, зеленый квадрат, все остальные белые.
 export const validateFieldN1 = ({ star, square, triangle, circle }) => {
@@ -74,27 +89,27 @@ export const validateFieldN5 = ({ star, square, triangle, circle }) => {
 export const validateFieldN6 = ({ star, square, triangle, circle }) => {
     let args = [star, square, circle];
     if (triangle !== 'green') return false;
-    return R.allPass([R.any(isRed), R.any(isGreen)])(args);
+    return areGreenAndRedAndOneOther(args);
 };
 
 // 7. Все фигуры оранжевые.
 export const validateFieldN7 = ({ star, square, triangle, circle }) => {
-    return R.all(isOrange)([star, square, triangle, circle]);
+    return allAreOrange([star, square, triangle, circle]);
 };
 
 // 8. Не красная и не белая звезда.
 export const validateFieldN8 = ({ star }) => {
-    return R.allPass([isNotRed, isNotWhite])(star);
+    return isNotWhiteOrRed(star);
 };
 
 // 9. Все фигуры зеленые.
 export const validateFieldN9 = ({ star, square, triangle, circle }) => {
-    return R.all(isGreen)([star, square, triangle, circle]);
+    return allAreGreen([star, square, triangle, circle]);
 };
 
 // 10. Треугольник и квадрат одного цвета (не белого)
 export const validateFieldN10 = ({ triangle, square }) => {
     if (triangle !== square) return false;
 
-    return R.all(isNotWhite)([triangle, square]);
+    return areNotWhite([triangle, square]);
 };
